@@ -5,7 +5,7 @@ import rentalSchema from "../schemas/rentals.schema.js";
 
 const rentals = Router()
 
-rentals.post("/rental", validateSchema(rentalSchema), postRental)
-rentals.get("/rental", getRental)
+rentals.post("/rentals", validateSchema(rentalSchema), postRental)
+rentals.get("/rentals", getRental)
 
 export default rentals 

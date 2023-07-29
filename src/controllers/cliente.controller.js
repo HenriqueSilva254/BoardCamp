@@ -10,17 +10,32 @@ export async function postCustomers(req, res){
 
         const insertUser = await db.query(`INSERT INTO customers (name, "phone", "cpf", "birthday") 
         VALUES ($1, $2, $3, $4)`, [name, phone, cpf, birthday])
-        res.sendStatus(200)
+        res.sendStatus(201)
     } catch (err) {
         res.status(500).send(err.message)
     }
 }
 
 export async function getCustomers(req, res){
-    // const {name, phone, cpf, birthday} = req.body
 
     try {
         const checkUser = await db.query(`SELECT * FROM customers` )
+        res.send(checkUser.rows)
+    } catch (err) {
+        res.status(500).send(err)
+    }
+}
+
+export async function putCustomers(req, res){
+    const {id} = req.params
+    const {name, phone, cpf, birthday} = req.body
+
+    try {
+        const checkUser = await db.query(`UPDATE customers 
+        SET name= $1, phone= $2, birthday= $3 
+        WHERE id= $4 and cpf= $5`, 
+        [name, phone, birthday, id, cpf] )
+        
         res.send(checkUser.rows)
     } catch (err) {
         res.status(500).send(err)
