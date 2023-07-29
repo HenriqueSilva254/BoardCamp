@@ -19,7 +19,8 @@ export async function postCustomers(req, res){
 export async function getCustomers(req, res){
 
     try {
-        const checkUser = await db.query(`SELECT * FROM customers` )
+        const checkUser = await db.query(`SELECT id, name, phone, cpf, SUBSTRING(birthday::text, 1, 10) AS birthday
+        FROM customers;` )
         res.send(checkUser.rows)
     } catch (err) {
         res.status(500).send(err)
