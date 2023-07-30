@@ -17,16 +17,21 @@ export async function postCustomers(req, res){
 }
 
 export async function getCustomers(req, res){
+    const {id} = req.params  
 
     try {
+        if(id){
+        const checkUserId = await db.query(`SELECT id, name, phone, cpf, SUBSTRING(birthday::text, 1, 10) AS birthday
+        FROM customers WHERE id=$1;`, [id] )
+        return res.status(200).send(checkUserId.rows)
+        } 
         const checkUser = await db.query(`SELECT id, name, phone, cpf, SUBSTRING(birthday::text, 1, 10) AS birthday
         FROM customers;` )
-        res.send(checkUser.rows)
+        res.status(200).send(checkUser.rows)
     } catch (err) {
         res.status(500).send(err)
     }
 }
-
 export async function putCustomers(req, res){
     const {id} = req.params
     const {name, phone, cpf, birthday} = req.body
