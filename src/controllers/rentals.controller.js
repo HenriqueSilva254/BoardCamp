@@ -52,13 +52,14 @@ export async function getRental(req, res){
 
 export async function finishRental(req, res){
     const {id} = req.params
+   
 
     try { 
-        const checkGameId = await db.query(`SELECT  rentals."gameId" FROM rentals WHERE id=$1`, [id])
+        const checkGameId = await db.query(`SELECT rentals."gameId" FROM rentals WHERE id=$1`, [id])
+        if(checkGameId.rows.length === 0) return res.status(404).send('Aluguel não existe') 
         const checkRentalFinish = await db.query(`SELECT  rentals."returnDate", rentals."rentDate" FROM rentals WHERE id=$1`, [id])
-        const rentDate = checkRentalFinish.rows[0].rentDate
         if(checkRentalFinish.rows.length > 0 && checkRentalFinish.rows[0].returnDate !== null) return res.status(400).send("Este aluguel já foi finalizado")
-        if(checkGameId.rows.length === 0) return res.status(404).send("ola")    
+        
 
         const checkPriceGame = await db.query(`SELECT games."pricePerDay" FROM games WHERE id= $1`, [checkGameId.rows[0].gameId])
         const priceGame = checkPriceGame.rows[0].pricePerDay
