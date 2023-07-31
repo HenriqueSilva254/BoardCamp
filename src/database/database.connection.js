@@ -1,7 +1,8 @@
+import { configDatabase } from './config.js';
 import pg from "pg";
-import dotenv from "dotenv";
+// import dotenv from "dotenv";
 
-dotenv.config();
+// dotenv.config();
 
 const { Pool } = pg;
 
