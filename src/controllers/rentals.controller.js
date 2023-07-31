@@ -6,16 +6,25 @@ export async function postRental(req, res){
     try { 
         const checkCustomerId = await db.query(`SELECT * FROM customers WHERE id=$1`, [customerId])
         const checkGameId = await db.query(`SELECT * FROM games WHERE id=$1`, [gameId])
+
         if(checkCustomerId.rows.length === 0) return res.sendStatus(400)
         if(checkGameId.rows.length === 0) return res.sendStatus(400)
 
+        const checkStock = await db.query(`SELECT games."stockTotal" FROM games WHERE games.id = $1`, [gameId])
+        const stock = checkStock.rows[0].stockTotal
+        if(stock <= 0) return res.status(400).send('Jogo sem estoque suficiente')
         const stockTotal = await db.query(`UPDATE games SET "stockTotal" = "stockTotal" -1 WHERE games.id = $1`, [gameId])
-        const postRental = await db.query(`INSERT INTO rentals 
-            ( "customerId", "gameId", "daysRented", "originalPrice", "returnDate", "delayFee" )
+        const postRental = await db.query(`INSERT INTO rentals (          
+            "customerId", 
+            "gameId", 
+            "rentDate",
+            "daysRented",
+            "returnDate", 
+            "originalPrice",  
+            "delayFee" )
             VALUES
-            ( $1, $2, $3, ${daysRented * checkGameId.rows[0].pricePerDay}, null, null )`,
+            ( $1, $2, CURRENT_DATE, $3, null, ${daysRented * checkGameId.rows[0].pricePerDay}, null )`,
             [customerId, gameId, daysRented])
-        
         
         res.sendStatus(200)
 
