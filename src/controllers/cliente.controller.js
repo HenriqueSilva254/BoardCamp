@@ -44,8 +44,8 @@ export async function putCustomers(req, res){
         const checkCpf = await db.query(`SELECT * FROM customers WHERE cpf= $1`, [cpf])
         if(checkCpf.rows.length > 0 && checkCpf.rows[0].id !== Number(id)) return  res.status(409).send('cpf de usuário já cadastrado')
         
-        const checkUser = await db.query(`UPDATE customers SET name= $1, phone= $2, birthday= $3 WHERE id= $4`, 
-        [name, phone, birthday, id] )
+        const checkUser = await db.query(`UPDATE customers SET name= $1, phone= $2, birthday= $3, cpf =$4 WHERE id= $5`, 
+        [name, phone, birthday, cpf, id] )
         
         res.sendStatus(200)
     } catch (err) {
