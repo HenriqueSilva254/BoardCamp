@@ -21,9 +21,13 @@ export async function getCustomers(req, res){
 
     try {
         if(id){
-        const checkUserId = await db.query(`SELECT id, name, phone, cpf, SUBSTRING(birthday::text, 1, 10) AS birthday
-        FROM customers WHERE id=$1;`, [id] )
-        return res.status(200).send(checkUserId.rows)
+        const checkUserId = await db.query(`SELECT json_build_object('id', id, 'name', name, 'phone', phone, 'cpf', cpf, 'birthday', TO_CHAR(birthday, 'YYYY-MM-DD')) AS customer_object
+        FROM customers
+        WHERE id = $1;`, [id] )
+        if(checkUserId.rows.length === 0) return res.status(404).send(`id de usuário inexistente`)
+        const customerObject = checkUserId.rows[0].customer_object;
+        return res.status(200).send(customerObject);
+        
         } 
         const checkUser = await db.query(`SELECT id, name, phone, cpf, SUBSTRING(birthday::text, 1, 10) AS birthday
         FROM customers;` )
