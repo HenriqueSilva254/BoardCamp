@@ -41,14 +41,13 @@ export async function putCustomers(req, res){
     const {name, phone, cpf, birthday} = req.body
 
     try {
-        const checkCpf = await db.query(`SELECT cpf FROM customers WHERE id = $1 and cpf= $2`, [id, cpf])
-        if(checkCpf.rows.length === 0) return  res.status(409).send('cpf de usuário já cadastrado')
-        const checkUser = await db.query(`UPDATE customers 
-        SET name= $1, phone= $2, birthday= $3 
-        WHERE id= $4`, 
+        const checkCpf = await db.query(`SELECT * FROM customers WHERE cpf= $1`, [cpf])
+        if(checkCpf.rows[0].id !== Number(id)) return  res.status(409).send('cpf de usuário já cadastrado')
+        
+        const checkUser = await db.query(`UPDATE customers SET name= $1, phone= $2, birthday= $3 WHERE id= $4`, 
         [name, phone, birthday, id] )
         
-        res.send(checkUser.rows)
+        res.sendStatus(200)
     } catch (err) {
         res.status(500).send(err)
     }
