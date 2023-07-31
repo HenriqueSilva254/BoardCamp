@@ -12,7 +12,7 @@ export async function postRental(req, res){
 
         const checkStock = await db.query(`SELECT games."stockTotal" FROM games WHERE games.id = $1`, [gameId])
         const stock = checkStock.rows[0].stockTotal
-        if(stock === 0) return res.status(400).send('Jogo sem estoque suficiente')
+        if(stock <= 0) return res.status(400).send('Jogo sem estoque suficiente')
         const stockTotal = await db.query(`UPDATE games SET "stockTotal" = "stockTotal" -1 WHERE games.id = $1`, [gameId])
         const postRental = await db.query(`INSERT INTO rentals (          
             "customerId", 
