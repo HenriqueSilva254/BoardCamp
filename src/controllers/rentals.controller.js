@@ -54,28 +54,24 @@ export async function finishRental(req, res){
     const {id} = req.params
 
     try { 
-        const checkCustomerId = await db.query(`SELECT rentals."customerId" FROM rentals WHERE id=$1`, [id])
         const checkGameId = await db.query(`SELECT  rentals."gameId" FROM rentals WHERE id=$1`, [id])
-
-        // if(checkCustomerId.rows.length === 0) return res.sendStatus(400)
-        // if(checkGameId.rows.length === 0) return res.sendStatus(400)    
+        const checkRentalFinish = await db.query(`SELECT  rentals."returnDate", rentals."rentDate" FROM rentals WHERE id=$1`, [id])
+        const rentDate = checkRentalFinish.rows[0].rentDate
+        if(checkRentalFinish.rows.length > 0 && checkRentalFinish.rows[0].returnDate !== null) return res.status(400).send("Este aluguel já foi finalizado")
+        if(checkGameId.rows.length === 0) return res.status(404).send("ola")    
 
         const checkPriceGame = await db.query(`SELECT games."pricePerDay" FROM games WHERE id= $1`, [checkGameId.rows[0].gameId])
         const priceGame = checkPriceGame.rows[0].pricePerDay
-        const stockTotal = await db.query(`UPDATE games SET "stockTotal" = "stockTotal" -1 WHERE games.id = $1`, [gameId])
+        const stockTotal = await db.query(`UPDATE games SET "stockTotal" = "stockTotal" + 1 WHERE games.id = $1`, [checkGameId.rows[0].gameId])
+        const postRental =  await db.query(`UPDATE rentals SET          
+        "returnDate" =  CURRENT_DATE, 
+        "delayFee" =  CASE 
+        WHEN ((EXTRACT(DAY FROM AGE(CURRENT_DATE, "rentDate")) - "daysRented") * ${priceGame}) > 0 
+        THEN ((EXTRACT(DAY FROM AGE(CURRENT_DATE, "rentDate")) - "daysRented") * ${priceGame})
+        ELSE 0
+        END 
+        WHERE id = $1`, [id]);
 
-        const postRental = await db.query(`INSERT INTO rentals (          
-            "customerId", 
-            "gameId", 
-            "rentDate",
-            "daysRented",
-            "returnDate", 
-            "originalPrice",  
-            "delayFee" )
-            VALUES
-            ( $1, $2, CURRENT_DATE, $3, null, ${daysRented * checkGameId.rows[0].pricePerDay}, ${(CURRENT_DATE - rentDate) * priceGame} )`,
-            [customerId, gameId, daysRented])
-        
         res.sendStatus(200)
 
     } catch (err) {
