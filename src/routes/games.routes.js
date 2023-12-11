@@ -3,9 +3,9 @@ import { getGames, postGames } from "../controllers/jogos.controller.js";
 import { validateSchema } from "../middlewares/validateSchema.js";
 import { gameSchema } from "../schemas/games.schema.js";
 
-const Gamesrouters = Router()
+const gamesRouters = Router()
 
-Gamesrouters.post("/games", validateSchema(gameSchema), postGames)
-Gamesrouters.get("/games", getGames)
+gamesRouters.post("/games", validateSchema(gameSchema), postGames)
+gamesRouters.get("/games", getGames)
 
-export default Gamesrouters
+export default gamesRouters
