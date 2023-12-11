@@ -12,4 +12,11 @@ export function conflict(resource) {
     }
 }
 
+export function insufficientStock() {
+    return {
+        type: "conflict", 
+        message: "Este jogo nao tem estoque suficiente"
+    }
+}
+
 export const errors = {notFound, conflict}

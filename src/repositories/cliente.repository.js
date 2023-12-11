@@ -1,6 +1,6 @@
 import { db } from "../database/database.connection.js"
 
-export async function inserCustomers(name, phone, cpf, birthday){
+export async function insertCustomers(name, phone, cpf, birthday){
     return  await db.query(`INSERT INTO customers (name, "phone", "cpf", "birthday") 
         VALUES ($1, $2, $3, $4)`, [name, phone, cpf, birthday])
 }

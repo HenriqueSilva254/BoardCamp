@@ -1,5 +1,4 @@
 
-import { db } from "../database/database.connection.js";
 import { chengeCustomersInfo, createCustomers, searchCustomers } from "../service/cliente.service.js";
 
 export async function postCustomers(req, res){

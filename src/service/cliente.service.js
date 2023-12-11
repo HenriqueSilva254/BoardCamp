@@ -1,11 +1,11 @@
 import { errors } from "../errors/errors.js"
-import { allCustomers, checkCustomers, customersById, inserCustomers, updateCustomers } from "../repositories/cliente.repository.js"
+import { allCustomers, checkCustomers, customersById, insertCustomers, updateCustomers } from "../repositories/cliente.repository.js"
 
 export async function createCustomers(name, phone, cpf, birthday){
     const check = await checkCustomers(cpf)
     if(check.rows && check.rows.length !== 0) throw errors.conflict("ususário")
 
-    await inserCustomers(name, phone, cpf, birthday)
+    await insertCustomers(name, phone, cpf, birthday)
 }
 
 export async function searchCustomers(id){
