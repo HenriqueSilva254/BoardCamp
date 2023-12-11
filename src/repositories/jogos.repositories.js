@@ -16,3 +16,13 @@ export async function checkGamesById(id){
 export async function allGames(){
     return await db.query(`SELECT * FROM games;`)
 }
+
+export async function checkPriceGame(id){
+    const price = await db.query(`SELECT games."pricePerDay" FROM games WHERE id= $1`, [id])
+    return price.rows[0].pricePerDay
+}
+
+export async function checkGamesByRentalId(id){
+    return await db.query(`SELECT rentals."gameId" FROM rentals WHERE id=$1`, [id])
+    
+}

@@ -14,9 +14,16 @@ export function conflict(resource) {
 
 export function insufficientStock() {
     return {
-        type: "conflict", 
+        type: "insufficientStock", 
         message: "Este jogo nao tem estoque suficiente"
     }
 }
 
-export const errors = {notFound, conflict}
+export function notFineshed() {
+    return {
+        type: "notFineshed", 
+        message: "Este aluguel ainda nao foi finalizado"
+    }
+}
+
+export const errors = {notFound, conflict, insufficientStock, notFineshed}

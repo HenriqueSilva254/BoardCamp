@@ -11,11 +11,11 @@ export function errorHandler(error, req, res, next) {
         return res.status(httpStatus.CONFLICT).send(error.message);
     }
 
-    if (error.type === "incompleteData") {
+    if (error.type === "insufficientStock") {
         return res.status(httpStatus.UNPROCESSABLE_ENTITY).send(error.message);
     }
 
-    if (error.type === "invalidId") {
+    if (error.type === "notFineshed") {
         return res.status(httpStatus.UNPROCESSABLE_ENTITY).send(err.message)
     }
 
